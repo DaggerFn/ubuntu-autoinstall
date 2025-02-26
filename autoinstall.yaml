@@ -1,28 +1,53 @@
 #cloud-config
 autoinstall:
-    version: 1
-    identity:
-        realname: 'Dionatan Simioni'
-        hostname: ubuntu-desktop
-        username: diolinux
-        password: '$y$j9T$uhkxlm8nUQaNu.6rl4k2d.$DIldpYy96OHg8lFjfXfc671BZcGWkPOmaDONGAhGSg3'
-    locale: pt_BR.utf8
-    keyboard:
-        layout: br
-    timezone: "America/Sao_Paulo"   
-    packages:
-        - libreoffice
-        - gimp
-        - git
-        - wget
-    snaps:
-        - name: spotify
-          channel: stable
-          classic: false
-    codecs:
-        install: true
-    drivers:
-        install: true
-    updates: all
-    shutdown: reboot
-
+  version: 1
+  locale: pt_BR.UTF-8
+  keyboard:
+    layout: pt
+    variant: br
+  identity:
+    hostname: ubuntu-pi
+    username: sim
+    # Senha "123" (hash gerado com SHA-512 – verifique se os parâmetros estão conforme sua necessidade)
+    password: "40bd001563085fc35165329ea1ff5c5ecbdbbeef"
+  ssh:
+    install-server: true
+  # Configuração de rede inicial: usa DHCP para garantir acesso à internet durante a instalação
+  network:
+    version: 2
+    ethernets:
+      eth0:
+        dhcp4: true
+  packages:
+    - python3-pip
+    - nodejs
+    - npm
+    - docker-compose
+    - tmux
+    - btop
+    - gunicorn
+    - openssh-server
+    - tightvncserver
+    - lxde
+    - firefox
+    - zip
+    - unzip
+    - nmap
+    - git
+    - wget
+    - curl
+    - neofetch
+    - fastfetch
+  late-commands:
+    # Instalação dos pacotes Python necessários
+    - curtin in-target -- pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn
+    # Reconfigura a rede para o modo desejado (offline local) após a instalação dos pacotes:
+    # 1. Define IP estático na interface eth0
+    - curtin in-target -- ip addr add 192.168.0.10/24 dev eth0
+    - curtin in-target -- netplan set ethernets.eth0.dhcp4=false
+    - curtin in-target -- netplan apply
+    # 2. Conecta a interface wlan0 à rede oculta "INDACCESS" sem senha
+    - curtin in-target -- nmcli device wifi connect INDACCESS ifname wlan0 hidden yes
+  storage:
+    layout:
+      name: lvm
