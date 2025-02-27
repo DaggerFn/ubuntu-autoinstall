@@ -25,7 +25,7 @@ sudo apt-get install -y \
   gunicorn \
   openssh-server \
   tightvncserver \
-  lxde \
+  neofetch \
   firefox \
   zip \
   unzip \
@@ -35,7 +35,9 @@ sudo apt-get install -y \
   curl
 
 echo "Instalando pacotes Python via pip..."
-sudo pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn
+sudo pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn --break-system-packages
+
+sudo git clone https://github.com/DaggerFn/YoloFactoryMonitor.git
 
 echo "======================================"
 echo "Configuração de rede"
@@ -58,6 +60,7 @@ sudo netplan apply
 # Conecta a interface Wi-Fi (wlan0) à rede oculta "INDACCESS" sem senha
 echo "Conectando à rede Wi-Fi oculta 'INDACCESS' na interface wlan0..."
 sudo nmcli device wifi connect INDACCESS ifname wlan0 hidden yes
+
 
 echo "======================================"
 echo "Pós-instalação concluída."
