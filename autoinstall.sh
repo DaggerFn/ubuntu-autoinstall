@@ -35,9 +35,20 @@ sudo apt-get install -y \
   curl
 
 echo "Instalando pacotes Python via pip..."
-sudo pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn --break-system-packages
+sudo pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn ncnn --break-system-packages
 
 sudo git clone https://github.com/DaggerFn/YoloFactoryMonitor.git
+
+echo "Desativando a GUI do sistema"
+sudo systemctl disable lightdm
+sudo systemctl stop lightdm
+
+sudo nano .vnc/xstartup
+
+#!/bin/sh
+xrdb "$HOME/.Xresources"
+startlxde &
+
 
 echo "======================================"
 echo "Configuração de rede"
