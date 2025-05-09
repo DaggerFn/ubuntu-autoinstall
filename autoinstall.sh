@@ -19,6 +19,7 @@ sudo apt-get install -y \
   python3-pip \
   nodejs \
   npm \
+  docker.io \
   docker-compose \
   tmux \
   btop \
@@ -32,22 +33,76 @@ sudo apt-get install -y \
   nmap \
   git \
   wget \
-  curl
+  curl \
+  build-essential \
+  cmake \
+  pkg-config \
+  libjpeg-dev \
+  libpng-dev \
+  libtiff-dev \
+  libavcodec-dev \
+  libavformat-dev \
+  libswscale-dev \
+  libavutil-dev \
+  libv4l-dev \
+  v4l-utils \
+  libxvidcore-dev \
+  libx264-dev \
+  libgtk-3-dev \
+  libatlas-base-dev \
+  gfortran \
+  python3-dev \
+  libgstreamer1.0-dev \
+  libgstreamer-plugins-base1.0-dev \
+  libqt5opengl5-dev \
+  libqt5gui5 \
+  libqt5core5a \
+  qt5-default 
+  
+cd ~
+git clone https://github.com/opencv/opencv.git
+git clone https://github.com/opencv/opencv_contrib.git
+cd ~/opencv
+mkdir build && cd build
+
+cmake -D CMAKE_BUILD_TYPE=Release \
+      -D CMAKE_INSTALL_PREFIX=/usr/local \
+      -D OPENCV_GENERATE_PKGCONFIG=ON \
+      -D WITH_FFMPEG=ON \
+      -D WITH_GSTREAMER=ON \
+      -D WITH_V4L=ON \
+      -D WITH_LIBV4L=ON \
+      -D WITH_OPENGL=ON \
+      -D BUILD_EXAMPLES=ON \
+      -D ENABLE_NEON=ON \
+      -D ENABLE_VFPV3=ON \
+      -D BUILD_NEW_PYTHON_SUPPORT=ON \
+      -D BUILD_opencv_python3=ON \
+      -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+      ..
+
+make -j$(nproc)
+sudo make install
+sudo ldconfig
 
 echo "Instalando pacotes Python via pip..."
-sudo pip3 install ultralytics flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn ncnn --break-system-packages
+sudo pip3 install ultralytics supervision flask flask-cors openvino-dev Flask-SQLAlchemy gunicorn ncnn --break-system-packages
 
-sudo git clone https://github.com/DaggerFn/YoloFactoryMonitor.git
+git clone https://github.com/DaggerFn/YoloFactoryMonitor.git
 
 echo "Desativando a GUI do sistema"
 sudo systemctl disable lightdm
 sudo systemctl stop lightdm
 
-sudo nano .vnc/xstartup
 
+mkdir -p ~/.vnc
+cat << 'EOF' > ~/.vnc/xstartup
 #!/bin/sh
-xrdb "$HOME/.Xresources"
-startlxde &
+#xrdb "$HOME/.Xresources"
+#startlxde &
+EOF
+chmod +x ~/.vnc/xstartup
+
 
 
 echo "======================================"
