@@ -56,8 +56,7 @@ sudo apt-get install -y \
   libgstreamer-plugins-base1.0-dev \
   libqt5opengl5-dev \
   libqt5gui5 \
-  libqt5core5a \
-  qt5-default 
+  libqt5core5a
   
 cd ~
 git clone https://github.com/opencv/opencv.git
