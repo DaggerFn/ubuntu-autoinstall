@@ -34,6 +34,7 @@ sudo apt-get install -y \
   git \
   wget \
   curl \
+  neovim \
   build-essential \
   cmake \
   pkg-config \
